@@ -1,3 +1,5 @@
+This fork fixes compilation error for newest Flutter version
+
 # http_proxy
 
 http_proxy get the proxy settings of mobile device automatically,and set up proxy for [http](https://pub.dev/packages/http).
