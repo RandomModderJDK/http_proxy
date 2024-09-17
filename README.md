@@ -1,4 +1,4 @@
-This fork fixes compilation error for newest Flutter version
+This fork fixes compilation error for the newest Flutter version
 
 # http_proxy
 
