@@ -1,13 +1,40 @@
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_js/flutter_js.dart';
+
 
 MethodChannel _channel = MethodChannel('com.lm.http.proxy');
 
 Future<String?> _getProxyHost() async {
+  if (Platform.isIOS) {
+    if (await _channel.invokeMethod('isPACUsed')) {
+      final pacProxyService = PACProxyService();
+      try {
+        return await pacProxyService._getProxyHost();
+      } catch (e) {
+        print("Oh no something went wrong when trying to get ProxyHost from PAC file:\n" + e.toString());
+        return await _channel.invokeMethod('getProxyHost');
+      }
+    }
+    return await _channel.invokeMethod('getProxyHost');
+  }
   return await _channel.invokeMethod('getProxyHost');
 }
 
 Future<String?> _getProxyPort() async {
+  if (Platform.isIOS) {
+    if (await _channel.invokeMethod('isPACUsed')) {
+      final pacProxyService = PACProxyService();
+      try {
+        return await pacProxyService._getProxyPort();
+      } catch (e) {
+        print("Oh no something went wrong when trying to get ProxyHost from PAC file:\n" + e.toString());
+        return null;
+      }
+    }
+    return await _channel.invokeMethod('getProxyPort');
+  }
   return await _channel.invokeMethod('getProxyPort');
 }
 
@@ -50,5 +77,54 @@ class HttpProxy extends HttpOverrides {
     }
 
     return super.findProxyFromEnvironment(url, environment);
+  }
+}
+
+class PACProxyService {
+  static const MethodChannel _channel = MethodChannel('your_channel_name');
+
+  Future<String> getPACURL() async {
+    return await _channel.invokeMethod('getPACURL');
+  }
+
+  Future<String?> _getProxyHost() async {
+    String pacUrl = await getPACURL();
+    String pacContent = await fetchPacFile(pacUrl);
+
+    // Placeholder values just to get the Proxy host
+    String placeholderUrl = 'https://duckduckgo.com/';
+    String placeholderHost = 'duckduckgo.com';
+
+    String proxy = await parsePacFile(pacContent, placeholderUrl, placeholderHost);
+    return proxy.split(':').first; // Return only the host part
+  }
+
+  Future<String?> _getProxyPort() async {
+    String pacUrl = await getPACURL();
+    String pacContent = await fetchPacFile(pacUrl);
+
+    // Placeholder values just to get the Proxy port
+    String placeholderUrl = 'https://duckduckgo.com/';
+    String placeholderHost = 'duckduckgo.com';
+
+    String proxy = await parsePacFile(pacContent, placeholderUrl, placeholderHost);
+    return proxy.split(':').last; // Return only the port part
+  }
+
+  Future<String> fetchPacFile(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+    return response.body;
+    } else {
+    throw Exception('Failed to load PAC file');
+    }
+  }
+
+  Future<String> parsePacFile(String pacContent, String url, String host) async {
+    final JavascriptRuntime jsRuntime = getJavascriptRuntime();
+    await jsRuntime.evaluate(pacContent);
+    final result = await jsRuntime.evaluate('FindProxyForURL("$url", "$host")');
+
+    return result.stringResult;
   }
 }
