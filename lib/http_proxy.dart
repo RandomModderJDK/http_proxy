@@ -6,6 +6,23 @@ import 'package:flutter_js/flutter_js.dart';
 
 MethodChannel _channel = MethodChannel('com.lm.http.proxy');
 
+
+/// Only works on iOS
+Future<String?> _isPACUsed() async {
+  if (Platform.isIOS) {
+    return await _channel.invokeMethod('isPACUsed');
+  }
+  return "false";
+}
+
+/// Only works on iOS
+Future<String?> _getPACURL() async {
+  if (Platform.isIOS) {
+    return await _channel.invokeMethod('getPACURL');
+  }
+  return null;
+}
+
 Future<String?> _getProxyHost() async {
   if (Platform.isIOS) {
     if (await _channel.invokeMethod('isPACUsed')) {
