@@ -38,6 +38,22 @@ Future<String?> _getProxyPort() async {
   return await _channel.invokeMethod('getProxyPort');
 }
 
+/// Only works on iOS
+Future<String?> _isPACUsed() async {
+  if (Platform.isIOS) {
+    return await _channel.invokeMethod('isPACUsed');
+  }
+  return "false";
+}
+
+/// Only works on iOS
+Future<String?> _getPACURL() async {
+  if (Platform.isIOS) {
+    return await _channel.invokeMethod('getPACURL');
+  }
+  return null;
+}
+
 class HttpProxy extends HttpOverrides {
   String? host;
   String? port;
@@ -50,20 +66,12 @@ class HttpProxy extends HttpOverrides {
     return HttpProxy._(await _getProxyHost(), await _getProxyPort());
   }
 
-  /// Only works on iOS
-  Future<String?> isPACUsed() async {
-  if (Platform.isIOS) {
-    return await _channel.invokeMethod('isPACUsed');
-    }
-    return "false";
+  static Future<String?> isPACUsed() async {
+    return await _isPACUsed();
   }
 
-/// Only works on iOS
-  Future<String?> getPACURL() async {
-  if (Platform.isIOS) {
-    return await _channel.invokeMethod('getPACURL');
-  }
-  return null;
+  static Future<String?> getPACURL() async {
+    return await _getPACURL();
 }
 
   @override
@@ -99,7 +107,7 @@ class HttpProxy extends HttpOverrides {
 }
 
 class PACProxyService {
-  static const MethodChannel _channel = MethodChannel('your_channel_name');
+  static const MethodChannel _channel = MethodChannel('com.lm.http.proxy');
 
   Future<String> getPACURL() async {
     return await _channel.invokeMethod('getPACURL');
