@@ -7,6 +7,7 @@ import 'package:flutter_js/flutter_js.dart';
 MethodChannel _channel = MethodChannel('com.lm.http.proxy');
 
 Future<String?> _getProxyHost() async {
+  /*
   if (Platform.isIOS) {
     if (await _channel.invokeMethod('isPACUsed')) {
       final pacProxyService = PACProxyService();
@@ -19,10 +20,12 @@ Future<String?> _getProxyHost() async {
     }
     return await _channel.invokeMethod('getProxyHost');
   }
+   */
   return await _channel.invokeMethod('getProxyHost');
 }
 
 Future<String?> _getProxyPort() async {
+  /*
   if (Platform.isIOS) {
     if (await _channel.invokeMethod('isPACUsed')) {
       final pacProxyService = PACProxyService();
@@ -35,6 +38,7 @@ Future<String?> _getProxyPort() async {
     }
     return await _channel.invokeMethod('getProxyPort');
   }
+   */
   return await _channel.invokeMethod('getProxyPort');
 }
 
