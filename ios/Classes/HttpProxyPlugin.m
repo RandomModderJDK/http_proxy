@@ -58,10 +58,8 @@
                 return proxyPort;
             }
         }
+        return nil;
     }
-
-    return nil;
-}
 
 - (BOOL)isPACUsed {
     CFDictionaryRef proxySettings = CFNetworkCopySystemProxySettings();
