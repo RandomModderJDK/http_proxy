@@ -13,11 +13,11 @@
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"getProxyHost" isEqualToString:call.method]) {
-        NSString *proxyHost = [self getProxyForURL:returnType:0];
+        NSString *proxyHost = [self getProxyForURL:0];
         result(proxyHost);
     }
     else if ([@"getProxyPort" isEqualToString:call.method]) {
-        NSString *proxyPort = [self getProxyForURL:returnType:1];
+        NSString *proxyPort = [self getProxyForURL:1];
         result(proxyPort);
     }
     else if ([@"isPACUsed" isEqualToString:call.method]) {
@@ -33,7 +33,7 @@
         }
     }
 
-    - (NSString *)getProxyForURL: (NSInteger)returnType {
+    - (NSString *)getProxyForURL:(NSInteger)returnType {
         NSURL *url = [NSURL URLWithString:@"http://duckduckgo.com"];
 
         NSDictionary *proxySettings = (__bridge_transfer NSDictionary *)CFNetworkCopySystemProxySettings();
