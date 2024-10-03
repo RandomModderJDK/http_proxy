@@ -13,11 +13,11 @@
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"getProxyHost" isEqualToString:call.method]) {
-        NSString *proxyHost = [self getProxyForURL:@"https://duckduckgo.com" returnType:0];
+        NSString *proxyHost = [self getProxyForURL:returnType:0];
         result(proxyHost);
     }
     else if ([@"getProxyPort" isEqualToString:call.method]) {
-        NSString *proxyPort = [self getProxyForURL:@"https://duckduckgo.com" returnType:1];
+        NSString *proxyPort = [self getProxyForURL:returnType:1];
         result(proxyPort);
     }
     else if ([@"isPACUsed" isEqualToString:call.method]) {
@@ -30,29 +30,36 @@
     }
     else {
         result(FlutterMethodNotImplemented);
-    }
-}
-
-- (NSString *)getProxyForURL:(NSString *)urlString returnType:(NSInteger)returnType {
-    NSURL *url = [NSURL URLWithString:urlString];
-    if (!url) {
-        return nil;
-    }
-
-    NSArray *proxies = (__bridge_transfer NSArray *)CFNetworkCopyProxiesForURL((__bridge CFURLRef)url, CFNetworkCopySystemProxySettings());
-    
-    if (proxies.count > 0) {
-        NSDictionary *proxyDict = proxies[0];
-        NSString *proxyHost = proxyDict[(NSString *)kCFNetworkProxiesHTTPProxy];
-        NSNumber *proxyPort = proxyDict[(NSString *)kCFNetworkProxiesHTTPPort];
-
-        if (returnType == 0) {
-            return proxyHost ? proxyHost : nil;
-        } else if (returnType == 1) {
-            return proxyPort ? proxyPort.stringValue : nil;
         }
     }
-    
+
+    - (NSString *)getProxyForURL: (NSInteger)returnType {
+        NSURL *url = [NSURL URLWithString:@"http://duckduckgo.com"];
+
+        NSDictionary *proxySettings = (__bridge_transfer NSDictionary *)CFNetworkCopySystemProxySettings();
+
+        NSArray *proxies = (__bridge_transfer NSArray *)CFNetworkCopyProxiesForURL((__bridge CFURLRef)url, (__bridge CFDictionaryRef)proxySettings);
+
+        for (NSDictionary *proxy in proxies) {
+            NSString *proxyHost = proxy[(NSString *)kCFProxyHostNameKey];
+            NSNumber *proxyPortNumber = proxy[(NSString *)kCFProxyPortNumberKey];
+
+            // Convert the port to a string
+            NSString *proxyPort = [proxyPortNumber stringValue];
+
+            if (proxyHost && proxyPort) {
+                NSLog(@"Proxy Host: %@", proxyHost);
+                NSLog(@"Proxy Port: %@", proxyPort);
+            }
+
+            if (returnType == 0) {
+                return proxyHost;
+            } else {
+                return proxyPort;
+            }
+        }
+    }
+
     return nil;
 }
 
