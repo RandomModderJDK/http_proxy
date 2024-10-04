@@ -14,7 +14,7 @@ dependencies:
   proxy_selector:
     git:
       url: https://github.com/Rajala1404/proxy.git
-      ref: 6532eb6e593a1d697994f8e6b968f719030fce81
+      ref: 98f1c06f2dcccc66f82daed59d6242cdca7576be
       branch: master
 
 
