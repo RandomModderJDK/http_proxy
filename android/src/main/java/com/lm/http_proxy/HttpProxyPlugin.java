@@ -39,12 +39,25 @@ public class HttpProxyPlugin implements FlutterPlugin, MethodCallHandler {
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     switch (call.method) {
-
+      case "getProxyHost":
+        result.success(getProxyHost());
+        break;
+      case "getProxyPort":
+        result.success(getProxyPort());
+        break;
     }
   }
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
+  }
+
+  private static String getProxyHost() {
+    return System.getProperty("http.proxyHost");
+  }
+
+  private static String getProxyPort() {
+    return System.getProperty("http.proxyPort");
   }
 }
