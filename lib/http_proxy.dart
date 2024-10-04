@@ -1,14 +1,50 @@
 import 'dart:io';
-import 'package:flutter/services.dart';
-
-MethodChannel _channel = MethodChannel('com.lm.http.proxy');
+import 'package:flutter/cupertino.dart';
+import 'package:proxy_selector/models/proxy_dto.dart';
+import 'package:proxy_selector/proxy_selector.dart';
 
 Future<String?> _getProxyHost() async {
-  return await _channel.invokeMethod('getProxyHost');
+  final proxyPlugin = ProxySelector();
+  try {
+    final address = Uri.tryParse("https://duckduckgo.com/");
+    final proxy = await proxyPlugin.getSystemProxyForUri(address!);
+    if (proxy != null && proxy.isNotEmpty) {
+      proxy.join();
+      List<ProxyDto> proxies = List.from(proxy);
+      proxies.removeWhere((element) => element.type == "NONE");
+      if (proxies.isNotEmpty) {
+        return proxies.first.host;
+      }
+    } else {
+      return null;
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+    return null;
+  }
+  return null;
 }
 
 Future<String?> _getProxyPort() async {
-  return await _channel.invokeMethod('getProxyPort');
+  final proxyPlugin = ProxySelector();
+  try {
+    final address = Uri.tryParse("https://duckduckgo.com/");
+    final proxy = await proxyPlugin.getSystemProxyForUri(address!);
+    if (proxy != null && proxy.isNotEmpty) {
+      proxy.join();
+      List<ProxyDto> proxies = List.from(proxy);
+      proxies.removeWhere((element) => element.type == "NONE");
+      if (proxies.isNotEmpty) {
+        return proxies.first.port;
+      }
+    } else {
+      return null;
+    }
+  } catch (e) {
+    debugPrint(e.toString());
+    return null;
+  }
+  return null;
 }
 
 class HttpProxy extends HttpOverrides {
