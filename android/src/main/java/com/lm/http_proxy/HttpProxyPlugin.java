@@ -17,7 +17,7 @@ public class HttpProxyPlugin implements FlutterPlugin, MethodCallHandler {
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "com.lm.http.proxy");
+    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "com.lm.http.proxy");
     channel.setMethodCallHandler(this);
   }
 
@@ -29,6 +29,9 @@ public class HttpProxyPlugin implements FlutterPlugin, MethodCallHandler {
         break;
       case "getProxyPort":
         result.success(getProxyPort());
+        break;
+      default:
+        result.notImplemented();
         break;
     }
   }
