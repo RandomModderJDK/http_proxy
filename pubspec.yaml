@@ -11,7 +11,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  proxy_selector: ^0.0.2
+  proxy_selector:
+    git:
+      url: https://github.com/mwaylabs/proxy.git
+      ref: 333921a68cf3adada8bb332f1fe7b1ccff484a43
+      branch: master
 
 
 dev_dependencies:
