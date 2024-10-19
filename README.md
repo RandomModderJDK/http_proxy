@@ -1,4 +1,4 @@
-This fork fixes compilation error for the newest Flutter version
+This fork fixes compilation error for the newest Flutter version and adds support for iOS PAC
 
 # http_proxy
 
