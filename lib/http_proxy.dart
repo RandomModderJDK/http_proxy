@@ -62,7 +62,7 @@ class HttpProxy extends HttpOverrides {
     var client = super.createHttpClient(context);
     client.badCertificateCallback =
             (X509Certificate cert, String host, int port) {
-      return true;
+      return false;
     };
     return client;
   }
