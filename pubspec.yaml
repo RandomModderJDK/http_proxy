@@ -13,8 +13,7 @@ dependencies:
     sdk: flutter
   proxy_selector:
     git:
-      url: https://github.com/lanis-mobile/proxy_selector.git
-      ref: 45ca3112d0c003a1d3244df8c7c47c7325354fdc
+      url: https://github.com/RandomModderJDK/proxy_selector.git
       branch: master
 
 
