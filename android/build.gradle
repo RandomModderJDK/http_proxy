@@ -22,9 +22,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    if (project.android.hasProperty("namespace")) {
-        namespace 'com.lm.http_proxy'
-    }
+    namespace 'com.lm.http_proxy'
     compileSdkVersion 34
 
     compileOptions {
